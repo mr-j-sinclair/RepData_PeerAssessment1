@@ -1,0 +1,79 @@
+---
+output: html_document
+---
+Peer Graded Assignment: Course Project 1
+========================
+
+#####Author: Jonathan Sinclair
+
+load relevant packages & data
+```{r results='hide', message=FALSE, warning=FALSE}
+library(dplyr)
+##Assumes Zip folder is in working directory (still zipped)
+act <- read.csv(unz("repdata_data_activity.zip", "activity.csv"))
+```
+
+###What is the mean total number of steps taken per day
+
+**1) Calculate the total number of steps taken per day**
+
+```{r}
+## Convert act$date to as.Date()
+act$date <- as.Date(x = act$date, "%Y-%m-%d")
+
+steps_per_day <- act %>% 
+  group_by(date) %>% 
+  summarize(steps=sum(steps, na.rm=TRUE))
+
+total_steps_per_day <- sum(steps_per_day$steps)
+print(paste("Total number of steps taken per day =", total_steps_per_day))
+```
+
+**2) Make a Histogram of the total number of steps taken each day**
+
+```{r}
+hist(steps_per_day$steps, main="Histogram: Total number of steps per day", ylab="Count", xlab="Total number of steps per day")
+```
+
+**3) Average and Median steps per day**
+
+```{r}
+      ## Mean
+mean_steps_per_day <- mean(steps_per_day$steps)
+print(paste("Average steps taken per day =", mean_steps_per_day))
+      ## Median
+median_steps_per_day <- median(steps_per_day$steps)
+print(paste("Median steps taken per day =", median_steps_per_day))
+```
+
+...................................
+
+##What is the average daily activity pattern?
+
+**1) Make a time series plot of the 5-minute interval and the average number of steps taken, averaged across all days**
+
+```{r}
+# Proccess / Transform data
+average_steps_per_day <- act %>%
+  group_by(interval) %>%
+  summarize(av_steps=mean(steps, na.rm=TRUE))
+
+# Make Plot
+plot(average_steps_per_day, type="l", main="Average number of steps taken across intervals", xlab="Interval", ylab="Average steps")
+```
+
+
+**2) Which 5 minute interval on average, contains the maximum number of steps?**
+
+```{r}
+which.max(average_steps_per_day$av_steps)
+```
+Interval 104
+
+
+
+
+
+
+
+
